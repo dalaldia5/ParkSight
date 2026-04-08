@@ -1,0 +1,11 @@
+{
+  "name": "parksight-root",
+  "private": true,
+  "scripts": {
+    "vercel-build": "npm --prefix frontend ci && npm --prefix frontend run build",
+    "build": "npm --prefix frontend run build"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  }
+}
