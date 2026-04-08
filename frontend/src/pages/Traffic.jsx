@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  MapPin, TrendingUp, AlertTriangle, Clock, Activity, Navigation,
+  MapPin, TrendingUp, AlertTriangle, Clock, Activity,
   BarChart3, LineChart as LineChartIcon, RefreshCw, Zap, Car
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
@@ -74,6 +74,7 @@ export default function Traffic() {
     // Auto-refresh every 30 seconds
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getCongestionColor = (level) => {

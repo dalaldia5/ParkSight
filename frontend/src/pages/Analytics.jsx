@@ -29,7 +29,6 @@ import {
   Car,
   Clock,
   BarChart3,
-  PieChart,
 } from "lucide-react";
 
 const hourlyData = [

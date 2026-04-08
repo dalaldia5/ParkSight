@@ -37,7 +37,6 @@ export default function Parking() {
   ]);
 
   // 🚀 YOLOv8 Backend Integration States
-  const [uploadedImage, setUploadedImage] = useState(null);
   const [detectionResult, setDetectionResult] = useState(null);
   const [isDetecting, setIsDetecting] = useState(false);
   const [detectionError, setDetectionError] = useState(null);
@@ -105,7 +104,6 @@ export default function Parking() {
       return;
     }
 
-    setUploadedImage(URL.createObjectURL(file));
     setIsDetecting(true);
     setDetectionError(null);
 
