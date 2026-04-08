@@ -22,7 +22,7 @@ export default function Traffic() {
   const [loading, setLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState(new Date());
 
-  const API_BASE = "http://localhost:5001/api";
+  const API_BASE = `${(import.meta.env.VITE_API_URL || "http://localhost:5001").replace(/\/$/, "")}/api`;
 
   // Fetch all data
   const fetchData = async () => {
