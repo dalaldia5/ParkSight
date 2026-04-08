@@ -1,15 +1,39 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  MapPin, TrendingUp, AlertTriangle, Clock, Activity,
-  BarChart3, LineChart as LineChartIcon, RefreshCw, Zap, Car
+  MapPin,
+  TrendingUp,
+  AlertTriangle,
+  Clock,
+  Activity,
+  BarChart3,
+  LineChart as LineChartIcon,
+  RefreshCw,
+  Zap,
+  Car,
 } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import {
-  LineChart, Line, BarChart, Bar, AreaChart, Area,
-  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
 } from "recharts";
 
 export default function Traffic() {
@@ -61,7 +85,9 @@ export default function Traffic() {
   const handleZoneSelect = async (zoneId) => {
     setSelectedZone(zoneId);
     try {
-      const forecastRes = await fetch(`${API_BASE}/zones/${zoneId}/forecast?hours=12`);
+      const forecastRes = await fetch(
+        `${API_BASE}/zones/${zoneId}/forecast?hours=12`,
+      );
       const forecastJson = await forecastRes.json();
       setZoneForecast(forecastJson.forecast || []);
     } catch (error) {
@@ -83,7 +109,7 @@ export default function Traffic() {
       High: "from-orange-500 to-red-500",
       Moderate: "from-yellow-500 to-orange-500",
       Low: "from-green-500 to-teal-500",
-      Minimal: "from-blue-500 to-cyan-500"
+      Minimal: "from-blue-500 to-cyan-500",
     };
     return colors[level] || "from-gray-500 to-gray-600";
   };
@@ -94,7 +120,7 @@ export default function Traffic() {
       High: "warning",
       Moderate: "default",
       Low: "success",
-      Minimal: "secondary"
+      Minimal: "secondary",
     };
     return variants[level] || "default";
   };
@@ -103,7 +129,10 @@ export default function Traffic() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <RefreshCw className="animate-spin text-emerald-400 mx-auto mb-4" size={48} />
+          <RefreshCw
+            className="animate-spin text-emerald-400 mx-auto mb-4"
+            size={48}
+          />
           <p className="text-white text-xl">Loading traffic data...</p>
         </div>
       </div>
@@ -249,7 +278,11 @@ export default function Traffic() {
                         </h4>
                         <p className="text-gray-400 text-sm">Zone #{zone.id}</p>
                       </div>
-                      <Badge variant={getCongestionBadgeVariant(zone.congestion.level)}>
+                      <Badge
+                        variant={getCongestionBadgeVariant(
+                          zone.congestion.level,
+                        )}
+                      >
                         {zone.congestion.level}
                       </Badge>
                     </div>
@@ -265,7 +298,7 @@ export default function Traffic() {
                       <div className="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
                         <div
                           className={`h-full bg-gradient-to-r ${getCongestionColor(
-                            zone.congestion.level
+                            zone.congestion.level,
                           )} transition-all duration-500`}
                           style={{ width: `${zone.occupancy_rate}%` }}
                         />
@@ -318,7 +351,8 @@ export default function Traffic() {
                         12-Hour Demand Forecast
                       </CardTitle>
                       <CardDescription className="text-gray-400">
-                        {zonesData.find((z) => z.id === selectedZone)?.name} - AI Predictions
+                        {zonesData.find((z) => z.id === selectedZone)?.name} -
+                        AI Predictions
                       </CardDescription>
                     </div>
                   </div>
@@ -332,13 +366,31 @@ export default function Traffic() {
                 <ResponsiveContainer width="100%" height={350}>
                   <AreaChart data={zoneForecast}>
                     <defs>
-                      <linearGradient id="demandGradient" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#a855f7" stopOpacity={0.8} />
-                        <stop offset="95%" stopColor="#a855f7" stopOpacity={0.1} />
+                      <linearGradient
+                        id="demandGradient"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="#a855f7"
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="#a855f7"
+                          stopOpacity={0.1}
+                        />
                       </linearGradient>
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                    <XAxis dataKey="time" stroke="#9ca3af" style={{ fill: "#fff" }} />
+                    <XAxis
+                      dataKey="time"
+                      stroke="#9ca3af"
+                      style={{ fill: "#fff" }}
+                    />
                     <YAxis stroke="#9ca3af" style={{ fill: "#fff" }} />
                     <Tooltip
                       contentStyle={{
@@ -387,7 +439,11 @@ export default function Traffic() {
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={hourlyTrends}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                      <XAxis dataKey="time" stroke="#9ca3af" style={{ fill: "#fff" }} />
+                      <XAxis
+                        dataKey="time"
+                        stroke="#9ca3af"
+                        style={{ fill: "#fff" }}
+                      />
                       <YAxis stroke="#9ca3af" style={{ fill: "#fff" }} />
                       <Tooltip
                         contentStyle={{
@@ -432,7 +488,11 @@ export default function Traffic() {
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={weeklyForecast}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                      <XAxis dataKey="day" stroke="#9ca3af" style={{ fill: "#fff" }} />
+                      <XAxis
+                        dataKey="day"
+                        stroke="#9ca3af"
+                        style={{ fill: "#fff" }}
+                      />
                       <YAxis stroke="#9ca3af" style={{ fill: "#fff" }} />
                       <Tooltip
                         contentStyle={{
@@ -443,8 +503,16 @@ export default function Traffic() {
                         }}
                       />
                       <Legend wrapperStyle={{ color: "#9ca3af" }} />
-                      <Bar dataKey="avg_demand" fill="#10b981" radius={[8, 8, 0, 0]} />
-                      <Bar dataKey="peak_demand" fill="#f59e0b" radius={[8, 8, 0, 0]} />
+                      <Bar
+                        dataKey="avg_demand"
+                        fill="#10b981"
+                        radius={[8, 8, 0, 0]}
+                      />
+                      <Bar
+                        dataKey="peak_demand"
+                        fill="#f59e0b"
+                        radius={[8, 8, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>

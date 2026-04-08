@@ -24,7 +24,7 @@ import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 
 // API URL configuration
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5001";
 
 export default function Parking() {
   const [slots] = useState([
@@ -54,17 +54,17 @@ export default function Parking() {
       try {
         const response = await fetch(`${API_URL}/detections/recent`);
         const data = await response.json();
-        
+
         if (data.success && data.images.length > 0) {
           // Map to full URLs
-          const imageUrls = data.images.map(img => `${API_URL}${img.url}`);
+          const imageUrls = data.images.map((img) => `${API_URL}${img.url}`);
           setDetectionImages(imageUrls);
         } else {
           // Fallback to placeholder if no detections yet
           setDetectionImages(["/UFPR05_rainy.png"]);
         }
       } catch (error) {
-        console.error('Error fetching recent detections:', error);
+        console.error("Error fetching recent detections:", error);
         // Fallback to placeholder on error
         setDetectionImages(["/UFPR05_rainy.png"]);
       } finally {
@@ -81,7 +81,7 @@ export default function Parking() {
 
   const handlePrev = () => {
     setCurrentIndex((prev) =>
-      prev === 0 ? detectionImages.length - 1 : prev - 1
+      prev === 0 ? detectionImages.length - 1 : prev - 1,
     );
   };
 
@@ -90,17 +90,24 @@ export default function Parking() {
     const file = event.target.files[0];
     if (!file) return;
 
-    console.log('📤 Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
+    console.log(
+      "📤 Uploading file:",
+      file.name,
+      "Size:",
+      file.size,
+      "Type:",
+      file.type,
+    );
 
     // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setDetectionError('Please upload a valid image file');
+    if (!file.type.startsWith("image/")) {
+      setDetectionError("Please upload a valid image file");
       return;
     }
 
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
-      setDetectionError('Image size must be less than 10MB');
+      setDetectionError("Image size must be less than 10MB");
       return;
     }
 
@@ -109,21 +116,23 @@ export default function Parking() {
 
     try {
       const formData = new FormData();
-      formData.append('image', file);  // Backend expects 'image' not 'file'
+      formData.append("image", file); // Backend expects 'image' not 'file'
 
       const response = await fetch(`${API_URL}/detect`, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
       const result = await response.json();
-      
+
       // Check if backend returned an error
       if (!response.ok || !result.success) {
-        throw new Error(result.error || `Detection failed: ${response.statusText}`);
+        throw new Error(
+          result.error || `Detection failed: ${response.statusText}`,
+        );
       }
 
-      console.log('Detection result:', result); // Debug log
+      console.log("Detection result:", result); // Debug log
       setDetectionResult(result);
       setDetectionError(null);
 
@@ -131,21 +140,28 @@ export default function Parking() {
       const refreshResponse = await fetch(`${API_URL}/detections/recent`);
       const refreshData = await refreshResponse.json();
       if (refreshData.success && refreshData.images.length > 0) {
-        const imageUrls = refreshData.images.map(img => `${API_URL}${img.url}`);
+        const imageUrls = refreshData.images.map(
+          (img) => `${API_URL}${img.url}`,
+        );
         setDetectionImages(imageUrls);
         setCurrentIndex(0); // Show the newest detection
       }
     } catch (error) {
-      console.error('Detection error:', error);
-      setDetectionError(error.message || 'Failed to detect parking spaces. Please try again.');
+      console.error("Detection error:", error);
+      setDetectionError(
+        error.message || "Failed to detect parking spaces. Please try again.",
+      );
       setDetectionResult(null);
     } finally {
       setIsDetecting(false);
     }
   };
 
-  const availableCount = detectionResult?.free_count ?? slots.filter((s) => s.status === "available").length;
-  const occupiedCount = detectionResult?.occupied_count ?? slots.length - availableCount;
+  const availableCount =
+    detectionResult?.free_count ??
+    slots.filter((s) => s.status === "available").length;
+  const occupiedCount =
+    detectionResult?.occupied_count ?? slots.length - availableCount;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 py-12 px-4">
@@ -230,7 +246,7 @@ export default function Parking() {
                 </div>
                 <Badge variant="success" className="animate-pulse">
                   <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
-                  {isDetecting ? 'Detecting...' : 'Ready'}
+                  {isDetecting ? "Detecting..." : "Ready"}
                 </Badge>
               </div>
             </CardHeader>
@@ -242,14 +258,19 @@ export default function Parking() {
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
                         {isDetecting ? (
-                          <Loader2 size={32} className="text-white animate-spin" />
+                          <Loader2
+                            size={32}
+                            className="text-white animate-spin"
+                          />
                         ) : (
                           <Upload size={32} className="text-white" />
                         )}
                       </div>
                       <div className="text-center">
                         <p className="text-white font-semibold text-lg">
-                          {isDetecting ? 'Analyzing Image...' : 'Click to Upload Parking Lot Image'}
+                          {isDetecting
+                            ? "Analyzing Image..."
+                            : "Click to Upload Parking Lot Image"}
                         </p>
                         <p className="text-gray-400 text-sm mt-1">
                           JPG, PNG or JPEG (Max 10MB)
@@ -280,12 +301,14 @@ export default function Parking() {
                       <XCircle size={16} />
                       {detectionError}
                     </p>
-                    {detectionError.includes('Model not loaded') && (
+                    {detectionError.includes("Model not loaded") && (
                       <div className="mt-2 text-xs text-red-300">
                         <p>🔧 Troubleshooting:</p>
                         <ul className="list-disc ml-5 mt-1 space-y-1">
                           <li>Check if backend is running on {API_URL}</li>
-                          <li>Verify best.pt model file exists in backend folder</li>
+                          <li>
+                            Verify best.pt model file exists in backend folder
+                          </li>
                           <li>Restart the backend server</li>
                         </ul>
                       </div>
@@ -310,25 +333,38 @@ export default function Parking() {
                   <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full text-white text-xs font-semibold">
                     {(() => {
                       // Show max confidence (like HansujaB's 95-96%) instead of average
-                      const conf = Array.isArray(detectionResult.confidence) && detectionResult.confidence.length > 0
-                        ? Math.max(...detectionResult.confidence)
-                        : 0.85;
+                      const conf =
+                        Array.isArray(detectionResult.confidence) &&
+                        detectionResult.confidence.length > 0
+                          ? Math.max(...detectionResult.confidence)
+                          : 0.85;
                       return (conf * 100).toFixed(1);
-                    })()}% Accuracy
+                    })()}
+                    % Accuracy
                   </div>
                   <div className="absolute bottom-4 left-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-3">
                     <div className="grid grid-cols-3 gap-2 text-center">
                       <div>
-                        <div className="text-emerald-400 font-bold text-lg">{detectionResult.free_count}</div>
+                        <div className="text-emerald-400 font-bold text-lg">
+                          {detectionResult.free_count}
+                        </div>
                         <div className="text-white text-xs">Available</div>
                       </div>
                       <div>
-                        <div className="text-red-400 font-bold text-lg">{detectionResult.occupied_count}</div>
+                        <div className="text-red-400 font-bold text-lg">
+                          {detectionResult.occupied_count}
+                        </div>
                         <div className="text-white text-xs">Occupied</div>
                       </div>
                       <div>
                         <div className="text-blue-400 font-bold text-lg">
-                          {Math.round((detectionResult.free_count / (detectionResult.free_count + detectionResult.occupied_count)) * 100)}%
+                          {Math.round(
+                            (detectionResult.free_count /
+                              (detectionResult.free_count +
+                                detectionResult.occupied_count)) *
+                              100,
+                          )}
+                          %
                         </div>
                         <div className="text-white text-xs">Free Rate</div>
                       </div>
@@ -350,16 +386,18 @@ export default function Parking() {
                     className="w-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                    <p className="text-white text-lg font-semibold">Upload an image to see detection</p>
+                    <p className="text-white text-lg font-semibold">
+                      Upload an image to see detection
+                    </p>
                   </div>
                 </motion.div>
               )}
 
               <p className="text-center text-gray-400 text-sm mt-4 flex items-center justify-center gap-2">
                 <CheckCircle size={16} className="text-emerald-400" />
-                {detectionResult 
-                  ? `Detected ${detectionResult.free_count + detectionResult.occupied_count} parking spaces with YOLOv8m` 
-                  : 'Upload a parking lot image for real-time AI detection'}
+                {detectionResult
+                  ? `Detected ${detectionResult.free_count + detectionResult.occupied_count} parking spaces with YOLOv8m`
+                  : "Upload a parking lot image for real-time AI detection"}
               </p>
             </CardContent>
           </Card>
@@ -383,9 +421,9 @@ export default function Parking() {
                     Recent Detections
                   </CardTitle>
                   <CardDescription className="text-gray-400">
-                    {isLoadingGallery 
-                      ? 'Loading recent detections...' 
-                      : `${detectionImages.length} recent detection${detectionImages.length !== 1 ? 's' : ''}`}
+                    {isLoadingGallery
+                      ? "Loading recent detections..."
+                      : `${detectionImages.length} recent detection${detectionImages.length !== 1 ? "s" : ""}`}
                   </CardDescription>
                 </div>
               </div>
@@ -395,14 +433,21 @@ export default function Parking() {
                 <div className="w-full max-w-4xl h-[400px] flex justify-center items-center">
                   <div className="text-center">
                     <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-                    <p className="text-gray-400">Loading recent detections...</p>
+                    <p className="text-gray-400">
+                      Loading recent detections...
+                    </p>
                   </div>
                 </div>
               ) : detectionImages.length === 0 ? (
                 <div className="w-full max-w-4xl h-[400px] flex justify-center items-center">
                   <div className="text-center">
-                    <ImageIcon size={48} className="text-gray-600 mx-auto mb-4" />
-                    <p className="text-gray-400">No detections yet. Upload an image to get started!</p>
+                    <ImageIcon
+                      size={48}
+                      className="text-gray-600 mx-auto mb-4"
+                    />
+                    <p className="text-gray-400">
+                      No detections yet. Upload an image to get started!
+                    </p>
                   </div>
                 </div>
               ) : (
@@ -548,117 +593,123 @@ export default function Parking() {
             </CardTitle>
             <CardDescription className="text-gray-400 text-center text-base">
               {detectionResult
-                ? 'Real-time AI detection - Click any available slot to book'
-                : 'Upload an image to see live parking detection'}
+                ? "Real-time AI detection - Click any available slot to book"
+                : "Upload an image to see live parking detection"}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
             <div className="flex flex-col items-center">
               <div className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-4 max-w-6xl">
-                {detectionResult && detectionResult.per_spot ? (
-                  // Dynamic grid from detection results
-                  detectionResult.per_spot.map((isOccupied, i) => {
-                    const slotNumber = i + 1;
-                    const isAvailable = !isOccupied;
-                    const confidence = detectionResult.confidence?.[i] || 0.85;
+                {detectionResult && detectionResult.per_spot
+                  ? // Dynamic grid from detection results
+                    detectionResult.per_spot.map((isOccupied, i) => {
+                      const slotNumber = i + 1;
+                      const isAvailable = !isOccupied;
+                      const confidence =
+                        detectionResult.confidence?.[i] || 0.85;
 
-                    return (
-                      <Link
-                        key={slotNumber}
-                        to={isAvailable ? `/booking?slot=${slotNumber}` : "#"}
-                        className={`${!isAvailable && "cursor-not-allowed"}`}
-                      >
-                        <motion.div
-                          whileHover={isAvailable ? { scale: 1.08, y: -4 } : {}}
-                          whileTap={isAvailable ? { scale: 0.95 } : {}}
-                          transition={{ duration: 0.2 }}
-                          className={`relative rounded-xl h-24 flex flex-col justify-center items-center 
+                      return (
+                        <Link
+                          key={slotNumber}
+                          to={isAvailable ? `/booking?slot=${slotNumber}` : "#"}
+                          className={`${!isAvailable && "cursor-not-allowed"}`}
+                        >
+                          <motion.div
+                            whileHover={
+                              isAvailable ? { scale: 1.08, y: -4 } : {}
+                            }
+                            whileTap={isAvailable ? { scale: 0.95 } : {}}
+                            transition={{ duration: 0.2 }}
+                            className={`relative rounded-xl h-24 flex flex-col justify-center items-center 
                                       shadow-lg hover:shadow-2xl transition-all overflow-hidden group
                                       ${
                                         isAvailable
                                           ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
                                           : "bg-gradient-to-br from-red-500 to-pink-600 opacity-70"
                                       }`}
-                        >
-                          {/* Shine effect on hover */}
-                          {isAvailable && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                          )}
-
-                          <span className="font-bold text-xl text-white relative z-10">
-                            {slotNumber}
-                          </span>
-                          <span className="text-xs text-white/90 font-medium relative z-10 flex items-center gap-1">
-                            {isAvailable ? (
-                              <>
-                                <CheckCircle size={12} />
-                                Available
-                              </>
-                            ) : (
-                              <>
-                                <XCircle size={12} />
-                                Occupied
-                              </>
+                          >
+                            {/* Shine effect on hover */}
+                            {isAvailable && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                             )}
-                          </span>
-                          {/* Confidence badge */}
-                          <span className="absolute top-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
-                            {Math.round(confidence * 100)}%
-                          </span>
-                        </motion.div>
-                      </Link>
-                    );
-                  })
-                ) : (
-                  // Default grid when no detection
-                  [...Array(28)].map((_, i) => {
-                    const slotNumber = i + 1;
-                    const occupiedSlots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28];
-                    const isAvailable = !occupiedSlots.includes(slotNumber);
 
-                    return (
-                      <Link
-                        key={slotNumber}
-                        to={isAvailable ? `/booking?slot=${slotNumber}` : "#"}
-                        className={`${!isAvailable && "cursor-not-allowed"}`}
-                      >
-                        <motion.div
-                          whileHover={isAvailable ? { scale: 1.08, y: -4 } : {}}
-                          whileTap={isAvailable ? { scale: 0.95 } : {}}
-                          transition={{ duration: 0.2 }}
-                          className={`relative rounded-xl h-24 flex flex-col justify-center items-center 
+                            <span className="font-bold text-xl text-white relative z-10">
+                              {slotNumber}
+                            </span>
+                            <span className="text-xs text-white/90 font-medium relative z-10 flex items-center gap-1">
+                              {isAvailable ? (
+                                <>
+                                  <CheckCircle size={12} />
+                                  Available
+                                </>
+                              ) : (
+                                <>
+                                  <XCircle size={12} />
+                                  Occupied
+                                </>
+                              )}
+                            </span>
+                            {/* Confidence badge */}
+                            <span className="absolute top-1 right-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                              {Math.round(confidence * 100)}%
+                            </span>
+                          </motion.div>
+                        </Link>
+                      );
+                    })
+                  : // Default grid when no detection
+                    [...Array(28)].map((_, i) => {
+                      const slotNumber = i + 1;
+                      const occupiedSlots = [
+                        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                        17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28,
+                      ];
+                      const isAvailable = !occupiedSlots.includes(slotNumber);
+
+                      return (
+                        <Link
+                          key={slotNumber}
+                          to={isAvailable ? `/booking?slot=${slotNumber}` : "#"}
+                          className={`${!isAvailable && "cursor-not-allowed"}`}
+                        >
+                          <motion.div
+                            whileHover={
+                              isAvailable ? { scale: 1.08, y: -4 } : {}
+                            }
+                            whileTap={isAvailable ? { scale: 0.95 } : {}}
+                            transition={{ duration: 0.2 }}
+                            className={`relative rounded-xl h-24 flex flex-col justify-center items-center 
                                       shadow-lg hover:shadow-2xl transition-all overflow-hidden group
                                       ${
                                         isAvailable
                                           ? "bg-gradient-to-br from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
                                           : "bg-gradient-to-br from-red-500 to-pink-600 opacity-70"
                                       }`}
-                        >
-                          {isAvailable && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-                          )}
-
-                          <span className="font-bold text-xl text-white relative z-10">
-                            {slotNumber}
-                          </span>
-                          <span className="text-xs text-white/90 font-medium relative z-10 flex items-center gap-1">
-                            {isAvailable ? (
-                              <>
-                                <CheckCircle size={12} />
-                                Available
-                              </>
-                            ) : (
-                              <>
-                                <XCircle size={12} />
-                                Occupied
-                              </>
+                          >
+                            {isAvailable && (
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                             )}
-                          </span>
-                        </motion.div>
-                      </Link>
-                    );
-                  })
-                )}
+
+                            <span className="font-bold text-xl text-white relative z-10">
+                              {slotNumber}
+                            </span>
+                            <span className="text-xs text-white/90 font-medium relative z-10 flex items-center gap-1">
+                              {isAvailable ? (
+                                <>
+                                  <CheckCircle size={12} />
+                                  Available
+                                </>
+                              ) : (
+                                <>
+                                  <XCircle size={12} />
+                                  Occupied
+                                </>
+                              )}
+                            </span>
+                          </motion.div>
+                        </Link>
+                      );
+                    })}
               </div>
 
               {/* Legend */}
@@ -677,7 +728,8 @@ export default function Parking() {
                   <span className="text-gray-300 font-medium">
                     Occupied{" "}
                     <span className="text-red-400 font-bold">
-                      ({detectionResult ? detectionResult.occupied_count : 27} slots)
+                      ({detectionResult ? detectionResult.occupied_count : 27}{" "}
+                      slots)
                     </span>
                   </span>
                 </div>
@@ -687,9 +739,13 @@ export default function Parking() {
                     <span className="text-gray-300 font-medium">
                       Confidence{" "}
                       <span className="text-blue-400 font-bold">
-                        {Array.isArray(detectionResult.confidence) && detectionResult.confidence.length > 0
-                          ? Math.round(Math.max(...detectionResult.confidence) * 100)
-                          : 85}%
+                        {Array.isArray(detectionResult.confidence) &&
+                        detectionResult.confidence.length > 0
+                          ? Math.round(
+                              Math.max(...detectionResult.confidence) * 100,
+                            )
+                          : 85}
+                        %
                       </span>
                     </span>
                   </div>
